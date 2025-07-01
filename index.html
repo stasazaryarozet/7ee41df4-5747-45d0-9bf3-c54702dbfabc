@@ -3,203 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAB Color Gradient (Matched to Folio Catalog)</title>
+    <title>Color Scale Comparison</title>
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin: 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-            margin: 10px 0;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 1200px;
-        }
-        .card { 
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            width: 180px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-        }
-        .swatch { 
-            width: 100%; 
-            height: 120px;
-        }
-        .info { 
-            padding: 15px; 
-            text-align: center; 
-            border-top: 1px solid #eee;
-        }
-        .info .folio { 
-            font-weight: bold; 
-            font-size: 1.2em; 
-            color: #333;
-            margin-bottom: 8px;
-            font-family: 'Courier New', monospace;
-        }
-        .info .lab { 
-            font-size: 0.85em; 
-            color: #666;
-            line-height: 1.4;
-        }
-        .info .hex {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            color: #888;
-            margin-top: 5px;
-        }
-        .source-info {
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 30px 0;
-            text-align: center;
-            max-width: 600px;
-            border: 1px solid #ddd;
-        }
-        .source-info h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-        .source-info p {
-            margin: 5px 0;
-            color: #666;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        h1, h2 { text-align: center; color: #333; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 40px; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 160px; overflow: hidden; }
+        .swatch { width: 100%; height: 120px; }
+        .info { padding: 12px; text-align: center; font-size: 0.9em; }
+        .info .folio, .info .step { font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 6px; }
+        .info .lab { font-size: 0.85em; color: #666; line-height: 1.4; }
+        .info .hex { font-family: 'SF Mono', 'Courier New', monospace; font-size: 0.9em; color: #888; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>LAB Color Gradient</h1>
-        <p>Interpolated colors matched to the nearest real Folio catalog color</p>
-    </div>
-    
-    <div class="source-info">
-        <h3>Source Colors from Screenshot</h3>
-        <p><strong>Dark/Saturated:</strong> L*: 22.26, a*: 3.29, b*: -5.94</p>
-        <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.05, b*: -1.82</p>
-    </div>
-    
-    <div class="container">
-
-        <div class="card">
-            <div class="swatch" style="background-color: #3d3f43;"></div>
-            <div class="info">
-                <div class="folio">6Q2-8</div>
-                <div class="lab">L*: 26.80<br>a*: -0.06<br>b*: -2.56</div>
-                <div class="hex">#3D3F43</div>
+    <h1>Color Scale Comparison</h1>
+<h2>Theoretical Gradient (Alternating L*/C*)</h2><div class='container'>
+            <div class="card">
+                <div class="swatch" style="background-color: #36333e;"></div>
+                <div class="info">
+                    <div class='step'>Step 1</div>
+                    <div class="lab">L*: 22.26<br>a*: 3.29<br>b*: -5.94</div>
+                    <div class="hex">#36333E</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #47434d;"></div>
-            <div class="info">
-                <div class="folio">6T2-8</div>
-                <div class="lab">L*: 29.20<br>a*: 4.16<br>b*: -5.94</div>
-                <div class="hex">#47434D</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #56545e;"></div>
+                <div class="info">
+                    <div class='step'>Step 2</div>
+                    <div class="lab">L*: 36.31<br>a*: 3.34<br>b*: -5.91</div>
+                    <div class="hex">#56545E</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #484d56;"></div>
-            <div class="info">
-                <div class="folio">6R3-8</div>
-                <div class="lab">L*: 32.84<br>a*: 0.39<br>b*: -6.20</div>
-                <div class="hex">#484D56</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #56545d;"></div>
+                <div class="info">
+                    <div class='step'>Step 3</div>
+                    <div class="lab">L*: 36.31<br>a*: 2.77<br>b*: -4.89</div>
+                    <div class="hex">#56545D</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #666f75;"></div>
-            <div class="info">
-                <div class="folio">6Q2-7</div>
-                <div class="lab">L*: 46.41<br>a*: -1.63<br>b*: -4.81</div>
-                <div class="hex">#666F75</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #787680;"></div>
+                <div class="info">
+                    <div class='step'>Step 4</div>
+                    <div class="lab">L*: 50.37<br>a*: 2.77<br>b*: -4.89</div>
+                    <div class="hex">#787680</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #7b828a;"></div>
-            <div class="info">
-                <div class="folio">6R1-6</div>
-                <div class="lab">L*: 54.16<br>a*: -0.90<br>b*: -5.41</div>
-                <div class="hex">#7B828A</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #78767e;"></div>
+                <div class="info">
+                    <div class='step'>Step 5</div>
+                    <div class="lab">L*: 50.37<br>a*: 2.19<br>b*: -3.87</div>
+                    <div class="hex">#78767E</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #939ba3;"></div>
-            <div class="info">
-                <div class="folio">6Q3-5</div>
-                <div class="lab">L*: 63.81<br>a*: -1.51<br>b*: -4.93</div>
-                <div class="hex">#939BA3</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #9d9ba3;"></div>
+                <div class="info">
+                    <div class='step'>Step 6</div>
+                    <div class="lab">L*: 64.42<br>a*: 2.19<br>b*: -3.87</div>
+                    <div class="hex">#9D9BA3</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #a6adb3;"></div>
-            <div class="info">
-                <div class="folio">6Q3-4</div>
-                <div class="lab">L*: 70.48<br>a*: -1.39<br>b*: -3.73</div>
-                <div class="hex">#A6ADB3</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #9c9ba1;"></div>
+                <div class="info">
+                    <div class='step'>Step 7</div>
+                    <div class="lab">L*: 64.42<br>a*: 1.61<br>b*: -2.85</div>
+                    <div class="hex">#9C9BA1</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #c1c5ca;"></div>
-            <div class="info">
-                <div class="folio">6Q3-3</div>
-                <div class="lab">L*: 79.63<br>a*: -0.72<br>b*: -2.71</div>
-                <div class="hex">#C1C5CA</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #c2c1c7;"></div>
+                <div class="info">
+                    <div class='step'>Step 8</div>
+                    <div class="lab">L*: 78.47<br>a*: 1.61<br>b*: -2.85</div>
+                    <div class="hex">#C2C1C7</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #d6d4dd;"></div>
-            <div class="info">
-                <div class="folio">6T2-2</div>
-                <div class="lab">L*: 85.55<br>a*: 2.09<br>b*: -3.82</div>
-                <div class="hex">#D6D4DD</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #c2c1c5;"></div>
+                <div class="info">
+                    <div class='step'>Step 9</div>
+                    <div class="lab">L*: 78.47<br>a*: 1.03<br>b*: -1.83</div>
+                    <div class="hex">#C2C1C5</div>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="swatch" style="background-color: #eae7eb;"></div>
-            <div class="info">
-                <div class="folio">4T2-1</div>
-                <div class="lab">L*: 92.15<br>a*: 1.40<br>b*: -1.35</div>
-                <div class="hex">#EAE7EB</div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #e9e9ed;"></div>
+                <div class="info">
+                    <div class='step'>Step 10</div>
+                    <div class="lab">L*: 92.52<br>a*: 1.03<br>b*: -1.83</div>
+                    <div class="hex">#E9E9ED</div>
+                </div>
             </div>
-        </div>
-        
-    </div>
-</body>
-</html>
+            </div><h2>Matched to Folio Catalog</h2><div class='container'>
+            <div class="card">
+                <div class="swatch" style="background-color: #3d3f43;"></div>
+                <div class="info">
+                    <div class='folio'>6Q2-8</div>
+                    <div class="lab">L*: 26.80<br>a*: -0.06<br>b*: -2.56</div>
+                    <div class="hex">#3D3F43</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #484d56;"></div>
+                <div class="info">
+                    <div class='folio'>6R3-8</div>
+                    <div class="lab">L*: 32.84<br>a*: 0.39<br>b*: -6.20</div>
+                    <div class="hex">#484D56</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #484d56;"></div>
+                <div class="info">
+                    <div class='folio'>6R3-8</div>
+                    <div class="lab">L*: 32.84<br>a*: 0.39<br>b*: -6.20</div>
+                    <div class="hex">#484D56</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #6c7278;"></div>
+                <div class="info">
+                    <div class='folio'>6Q3-7</div>
+                    <div class="lab">L*: 48.02<br>a*: -1.06<br>b*: -3.82</div>
+                    <div class="hex">#6C7278</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #6c7278;"></div>
+                <div class="info">
+                    <div class='folio'>6Q3-7</div>
+                    <div class="lab">L*: 48.02<br>a*: -1.06<br>b*: -3.82</div>
+                    <div class="hex">#6C7278</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #939ba3;"></div>
+                <div class="info">
+                    <div class='folio'>6Q3-5</div>
+                    <div class="lab">L*: 63.81<br>a*: -1.51<br>b*: -4.93</div>
+                    <div class="hex">#939BA3</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #a19a9c;"></div>
+                <div class="info">
+                    <div class='folio'>6G1-5</div>
+                    <div class="lab">L*: 64.47<br>a*: 2.45<br>b*: 0.18</div>
+                    <div class="hex">#A19A9C</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #c1c5ca;"></div>
+                <div class="info">
+                    <div class='folio'>6Q3-3</div>
+                    <div class="lab">L*: 79.63<br>a*: -0.72<br>b*: -2.71</div>
+                    <div class="hex">#C1C5CA</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #c1c5ca;"></div>
+                <div class="info">
+                    <div class='folio'>6Q3-3</div>
+                    <div class="lab">L*: 79.63<br>a*: -0.72<br>b*: -2.71</div>
+                    <div class="hex">#C1C5CA</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="swatch" style="background-color: #eae7eb;"></div>
+                <div class="info">
+                    <div class='folio'>4T2-1</div>
+                    <div class="lab">L*: 92.15<br>a*: 1.40<br>b*: -1.35</div>
+                    <div class="hex">#EAE7EB</div>
+                </div>
+            </div>
+            </div></body></html>
