@@ -1,0 +1,97 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Folio Color Scale v2</title>
+        <style>
+            body { font-family: sans-serif; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px; }
+            .card { border: 1px solid #ccc; border-radius: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); width: 150px; }
+            .swatch { width: 100%; height: 150px; border-top-left-radius: 8px; border-top-right-radius: 8px; }
+            .info { padding: 10px; text-align: center; }
+            .info .folio { font-weight: bold; font-size: 1.1em; }
+            .info .lab { font-size: 0.8em; color: #555; }
+        </style>
+    </head>
+    <body>
+    
+        <div class="card">
+            <div class="swatch" style="background-color: #544a58;"></div>
+            <div class="info">
+                <div class="folio">6A1-8</div>
+                <div class="lab">L*: 33.18, a*: 6.73, b*: -6.56</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #604d5c;"></div>
+            <div class="info">
+                <div class="folio">5B1-8</div>
+                <div class="lab">L*: 35.35, a*: 10.70, b*: -5.62</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #7c6c78;"></div>
+            <div class="info">
+                <div class="folio">6A2-7</div>
+                <div class="lab">L*: 47.71, a*: 8.67, b*: -4.44</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #8d7d88;"></div>
+            <div class="info">
+                <div class="folio">6A3-6</div>
+                <div class="lab">L*: 54.25, a*: 8.44, b*: -3.87</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #8d7d88;"></div>
+            <div class="info">
+                <div class="folio">6A3-6</div>
+                <div class="lab">L*: 54.25, a*: 8.44, b*: -3.87</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #a89aa4;"></div>
+            <div class="info">
+                <div class="folio">6B1-5</div>
+                <div class="lab">L*: 65.22, a*: 7.26, b*: -3.51</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #baadb6;"></div>
+            <div class="info">
+                <div class="folio">6B1-4</div>
+                <div class="lab">L*: 72.31, a*: 5.92, b*: -2.60</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #cbbfc5;"></div>
+            <div class="info">
+                <div class="folio">6B1-3</div>
+                <div class="lab">L*: 78.75, a*: 5.07, b*: -1.38</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #d5ccd1;"></div>
+            <div class="info">
+                <div class="folio">6B1-2</div>
+                <div class="lab">L*: 83.18, a*: 3.98, b*: -1.24</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #e5e1e3;"></div>
+            <div class="info">
+                <div class="folio">6A1-1</div>
+                <div class="lab">L*: 90.02, a*: 1.66, b*: -0.56</div>
+            </div>
+        </div>
+        </body></html>

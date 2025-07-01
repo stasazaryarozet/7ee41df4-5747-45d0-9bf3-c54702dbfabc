@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB Color Gradient from Screenshot</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin: 10px 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+        }
+        .card { 
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            width: 180px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        .swatch { 
+            width: 100%; 
+            height: 120px;
+            position: relative;
+        }
+        .swatch::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+        }
+        .info { 
+            padding: 15px; 
+            text-align: center; 
+        }
+        .info .step { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .info .lab { 
+            font-size: 0.85em; 
+            color: #666;
+            line-height: 1.4;
+        }
+        .info .hex {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 5px;
+        }
+        .source-info {
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            max-width: 600px;
+        }
+        .source-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .source-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LAB Color Gradient</h1>
+        <p>Generated from Paletton Screenshot Analysis</p>
+    </div>
+    
+    <div class="source-info">
+        <h3>Source Colors from Screenshot</h3>
+        <p><strong>Dark/Saturated:</strong> L*: 22.36, a*: -5.84, b*: -0.81</p>
+        <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.54, b*: -0.82</p>
+        <p>10-step linear interpolation in LAB color space</p>
+    </div>
+    
+    <div class="container">
+
+        <div class="card">
+            <div class="swatch" style="background-color: #2a3836;"></div>
+            <div class="info">
+                <div class="step">Step 1</div>
+                <div class="lab">L*: 22.36<br>a*: -5.84<br>b*: -0.81</div>
+                <div class="hex">#2A3836</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #3d4948;"></div>
+            <div class="info">
+                <div class="step">Step 2</div>
+                <div class="lab">L*: 30.16<br>a*: -5.02<br>b*: -0.81</div>
+                <div class="hex">#3D4948</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #515b5a;"></div>
+            <div class="info">
+                <div class="step">Step 3</div>
+                <div class="lab">L*: 37.95<br>a*: -4.20<br>b*: -0.81</div>
+                <div class="hex">#515B5A</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #656e6d;"></div>
+            <div class="info">
+                <div class="step">Step 4</div>
+                <div class="lab">L*: 45.75<br>a*: -3.38<br>b*: -0.82</div>
+                <div class="hex">#656E6D</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #7a8181;"></div>
+            <div class="info">
+                <div class="step">Step 5</div>
+                <div class="lab">L*: 53.54<br>a*: -2.56<br>b*: -0.82</div>
+                <div class="hex">#7A8181</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #909595;"></div>
+            <div class="info">
+                <div class="step">Step 6</div>
+                <div class="lab">L*: 61.34<br>a*: -1.74<br>b*: -0.82</div>
+                <div class="hex">#909595</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #a6a9aa;"></div>
+            <div class="info">
+                <div class="step">Step 7</div>
+                <div class="lab">L*: 69.14<br>a*: -0.92<br>b*: -0.82</div>
+                <div class="hex">#A6A9AA</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #bcbdbf;"></div>
+            <div class="info">
+                <div class="step">Step 8</div>
+                <div class="lab">L*: 76.93<br>a*: -0.10<br>b*: -0.82</div>
+                <div class="hex">#BCBDBF</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #d4d3d5;"></div>
+            <div class="info">
+                <div class="step">Step 9</div>
+                <div class="lab">L*: 84.73<br>a*: 0.72<br>b*: -0.82</div>
+                <div class="hex">#D4D3D5</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="swatch" style="background-color: #ebe8eb;"></div>
+            <div class="info">
+                <div class="step">Step 10</div>
+                <div class="lab">L*: 92.52<br>a*: 1.54<br>b*: -0.82</div>
+                <div class="hex">#EBE8EB</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
