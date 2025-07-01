@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from skimage.color import lab2rgb, deltaE_cie76, lab2lch, lch2lab
+from skimage.color import lab2rgb, deltaE_cie76, lab2lch, lch2lab, deltaE_ciede2000
 import sys
 import os
 import math
@@ -70,10 +70,11 @@ def generate_alternating_gradient(lab_start, lab_end, steps=10, start_with_light
 
 
 def find_closest_folio_color(lab_color, catalog_df):
-    """Finds the closest color in the Folio catalog using Delta E."""
+    """Finds the closest color in the Folio catalog using the CIEDE2000 formula."""
     target_lab = np.array(lab_color)
     catalog_labs = catalog_df[['Target_Coordinate1', 'Target_Coordinate2', 'Target_Coordinate3']].values
-    deltas = deltaE_cie76(target_lab, catalog_labs)
+    # Using the more perceptually uniform CIEDE2000 formula
+    deltas = deltaE_ciede2000(target_lab, catalog_labs)
     closest_idx = np.argmin(deltas)
     return catalog_df.iloc[closest_idx]
 
