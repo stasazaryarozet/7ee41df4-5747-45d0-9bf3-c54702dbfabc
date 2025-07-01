@@ -3,116 +3,98 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Color Scale Comparison</title>
+    <title>Color Scale</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f0f0; margin: 2em; }
-        .container { display: flex; flex-direction: row; border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 2em; }
-        .color-band { padding: 10px; min-height: 100px; min-width: 80px; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .color-info p { margin: 2px 0; font-size: 0.8em; }
-        h2 { text-align: center; }
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f0f0; margin: 0; }
+        .container { display: flex; flex-direction: column; border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .color-band { padding: 20px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .color-info { text-align: center; }
+        .color-info p { margin: 2px 0; }
     </style>
 </head>
 <body>
-<h2>Ideal Gradient (Interpolated)</h2><div class='container'>
-            <div class="color-band" style="background-color: rgb(77, 77, 77); color: white;" title="LAB: 33.00, 0.00, 0.00 RGB: 77, 77, 77">
-                <div class="color-info">
-                    <p>Step 1</p>
-                </div>
+    <div class="container">
+
+        <div class="color-band" style="background-color: rgb(73, 73, 72); color: white;">
+            <div class="color-info">
+                <p>Step 1</p>
+                <p>LAB: 33.00, 0.00, 0.00</p>
+                <p>RGB: 73, 73, 72</p>
+                <p>Closest Match: 6L1-8 (dE2000: 1.71)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(93, 93, 93); color: white;" title="LAB: 39.67, 0.00, 0.00 RGB: 93, 93, 93">
-                <div class="color-info">
-                    <p>Step 2</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(79, 82, 82); color: white;">
+            <div class="color-info">
+                <p>Step 2</p>
+                <p>LAB: 39.67, 0.00, 0.00</p>
+                <p>RGB: 79, 82, 82</p>
+                <p>Closest Match: 6L3-8 (dE2000: 4.48)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(109, 109, 109); color: white;" title="LAB: 46.33, 0.00, 0.00 RGB: 109, 109, 109">
-                <div class="color-info">
-                    <p>Step 3</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(117, 116, 113); color: white;">
+            <div class="color-info">
+                <p>Step 3</p>
+                <p>LAB: 46.33, 0.00, 0.00</p>
+                <p>RGB: 117, 116, 113</p>
+                <p>Closest Match: 6L1-7 (dE2000: 3.27)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(126, 126, 126); color: black;" title="LAB: 53.00, 0.00, 0.00 RGB: 126, 126, 126">
-                <div class="color-info">
-                    <p>Step 4</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(121, 126, 132); color: black;">
+            <div class="color-info">
+                <p>Step 4</p>
+                <p>LAB: 53.00, 0.00, 0.00</p>
+                <p>RGB: 121, 126, 132</p>
+                <p>Closest Match: 6Q3-6 (dE2000: 3.70)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(143, 143, 143); color: black;" title="LAB: 59.67, 0.00, 0.00 RGB: 143, 143, 143">
-                <div class="color-info">
-                    <p>Step 5</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(137, 139, 136); color: black;">
+            <div class="color-info">
+                <p>Step 5</p>
+                <p>LAB: 59.67, 0.00, 0.00</p>
+                <p>RGB: 137, 139, 136</p>
+                <p>Closest Match: 6L2-6 (dE2000: 2.76)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(161, 161, 161); color: black;" title="LAB: 66.33, 0.00, 0.00 RGB: 161, 161, 161">
-                <div class="color-info">
-                    <p>Step 6</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(163, 165, 164); color: black;">
+            <div class="color-info">
+                <p>Step 6</p>
+                <p>LAB: 66.33, 0.00, 0.00</p>
+                <p>RGB: 163, 165, 164</p>
+                <p>Closest Match: 6L1-5 (dE2000: 1.51)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(179, 179, 179); color: black;" title="LAB: 73.00, 0.00, 0.00 RGB: 179, 179, 179">
-                <div class="color-info">
-                    <p>Step 7</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(178, 180, 179); color: black;">
+            <div class="color-info">
+                <p>Step 7</p>
+                <p>LAB: 73.00, 0.00, 0.00</p>
+                <p>RGB: 178, 180, 179</p>
+                <p>Closest Match: 6L1-4 (dE2000: 1.35)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(197, 197, 197); color: black;" title="LAB: 79.67, 0.00, 0.00 RGB: 197, 197, 197">
-                <div class="color-info">
-                    <p>Step 8</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(200, 201, 199); color: black;">
+            <div class="color-info">
+                <p>Step 8</p>
+                <p>LAB: 79.67, 0.00, 0.00</p>
+                <p>RGB: 200, 201, 199</p>
+                <p>Closest Match: 6L1-3 (dE2000: 1.62)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(215, 215, 215); color: black;" title="LAB: 86.33, 0.00, 0.00 RGB: 215, 215, 215">
-                <div class="color-info">
-                    <p>Step 9</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(216, 216, 213); color: black;">
+            <div class="color-info">
+                <p>Step 9</p>
+                <p>LAB: 86.33, 0.00, 0.00</p>
+                <p>RGB: 216, 216, 213</p>
+                <p>Closest Match: 6K3-2 (dE2000: 1.57)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(234, 234, 234); color: black;" title="LAB: 93.00, 0.00, 0.00 RGB: 234, 234, 234">
-                <div class="color-info">
-                    <p>Step 10</p>
-                </div>
-            </div></div><h2>Real Folio Colors (Closest Match)</h2><div class='container'>
-            <div class="color-band" style="background-color: rgb(73, 73, 72); color: white;" title="LAB: 31.32, -0.37, 0.95 RGB: 73, 73, 72 Match: 6L1-8 dE2000: 1.71">
-                <div class="color-info">
-                    <p>Step 1</p>
-                </div>
+        </div>
+        <div class="color-band" style="background-color: rgb(228, 228, 229); color: black;">
+            <div class="color-info">
+                <p>Step 10</p>
+                <p>LAB: 93.00, 0.00, 0.00</p>
+                <p>RGB: 228, 228, 229</p>
+                <p>Closest Match: 6R2-1 (dE2000: 1.50)</p>
             </div>
-            <div class="color-band" style="background-color: rgb(79, 82, 82); color: white;" title="LAB: 34.80, -1.21, -0.20 RGB: 79, 82, 82 Match: 6L3-8 dE2000: 4.48">
-                <div class="color-info">
-                    <p>Step 2</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(117, 116, 113); color: white;" title="LAB: 49.19, -0.23, 1.70 RGB: 117, 116, 113 Match: 6L1-7 dE2000: 3.27">
-                <div class="color-info">
-                    <p>Step 3</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(121, 126, 132); color: black;" title="LAB: 52.84, -1.15, -3.65 RGB: 121, 126, 132 Match: 6Q3-6 dE2000: 3.70">
-                <div class="color-info">
-                    <p>Step 4</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(137, 139, 136); color: black;" title="LAB: 57.75, -1.16, 1.47 RGB: 137, 139, 136 Match: 6L2-6 dE2000: 2.76">
-                <div class="color-info">
-                    <p>Step 5</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(163, 165, 164); color: black;" title="LAB: 67.61, -0.74, 0.22 RGB: 163, 165, 164 Match: 6L1-5 dE2000: 1.51">
-                <div class="color-info">
-                    <p>Step 6</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(178, 180, 179); color: black;" title="LAB: 73.46, -0.89, 0.20 RGB: 178, 180, 179 Match: 6L1-4 dE2000: 1.35">
-                <div class="color-info">
-                    <p>Step 7</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(200, 201, 199); color: black;" title="LAB: 81.09, -0.65, 0.90 RGB: 200, 201, 199 Match: 6L1-3 dE2000: 1.62">
-                <div class="color-info">
-                    <p>Step 8</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(216, 216, 213); color: black;" title="LAB: 86.33, -0.32, 1.55 RGB: 216, 216, 213 Match: 6K3-2 dE2000: 1.57">
-                <div class="color-info">
-                    <p>Step 9</p>
-                </div>
-            </div>
-            <div class="color-band" style="background-color: rgb(228, 228, 229); color: black;" title="LAB: 90.73, 0.08, -0.53 RGB: 228, 228, 229 Match: 6R2-1 dE2000: 1.50">
-                <div class="color-info">
-                    <p>Step 10</p>
-                </div>
-            </div></div>
+        </div>
+    </div>
 </body>
 </html>
