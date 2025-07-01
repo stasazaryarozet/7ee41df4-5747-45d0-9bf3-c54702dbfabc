@@ -140,7 +140,8 @@ def generate_color_scale_html(ideal_scale, real_scale, filename="color_scale.htm
 
 def main():
     """
-    Главная функция для генерации градиентной шкалы по методу попеременных шагов.
+    Главная функция для генерации градиентной шкалы по методу попеременных шагов
+    с нелинейной интерполяцией насыщенности.
     """
     excel_file = '27.06.2025г. Каталог Folio (составы) .xlsx'
     
@@ -164,38 +165,43 @@ def main():
     if abs(h1 - h2) > 180:
         avg_hue = (avg_hue + 180) % 360
 
-    num_points = 11  # 10 шагов = 11 точек в градиенте
-    # Распределяем количество шагов изменения между светлотой и насыщенностью
-    lightness_steps_count = (num_points - 1) // 2 + ((num_points - 1) % 2)
-    chroma_steps_count = (num_points - 1) // 2
-    
-    delta_l = end_lch.lch_l - start_lch.lch_l
-    delta_c = end_lch.lch_c - start_lch.lch_c
-
-    l_step_size = delta_l / lightness_steps_count if lightness_steps_count > 0 else 0
-    c_step_size = delta_c / chroma_steps_count if chroma_steps_count > 0 else 0
-
+    num_points = 11
     ideal_color_scale = []
     real_color_scale = []
+    
+    peak_chroma_boost = 15.0 # Добавочная насыщенность в пике
 
     l_val, c_val = start_lch.lch_l, start_lch.lch_c
-
+    
+    # Сколько всего шагов для L и C
+    total_l_steps = (num_points - 1) // 2 + ((num_points - 1) % 2)
+    total_c_steps = (num_points - 1) // 2
+    
+    l_step_size = (end_lch.lch_l - start_lch.lch_l) / total_l_steps if total_l_steps > 0 else 0
+    
     for i in range(num_points):
+        t = i / (num_points - 1)
+        
+        if i > 0:
+            # Попеременно меняем L и C
+            if (i - 1) % 2 == 0:  # Шаги 1, 3, 5... -> меняем L
+                l_val += l_step_size
+            else:  # Шаги 2, 4, 6... -> меняем C
+                # Для Хромы используем нелинейную интерполяцию для "сочности"
+                linear_chroma = start_lch.lch_c + (end_lch.lch_c - start_lch.lch_c) * t
+                bulge = peak_chroma_boost * np.sin(np.pi * t)
+                c_val = linear_chroma + bulge
+        
+        # Гарантируем, что начальная и конечная точки соответствуют заданным
         if i == 0:
             gen_lch = start_lch
         elif i == num_points - 1:
-            # Гарантируем точное попадание в конечный цвет
             gen_lch = end_lch
         else:
-            # Попеременно меняем L и C
-            if (i - 1) % 2 == 0:  # Шаги 1, 3, 5... (переходы 0, 2, 4...) -> меняем L
-                l_val += l_step_size
-            else:  # Шаги 2, 4, 6... (переходы 1, 3, 5...) -> меняем C
-                c_val += c_step_size
             gen_lch = LCHabColor(l_val, c_val, avg_hue)
         
         gen_lab = convert_color(gen_lch, LabColor)
-
+        
         # Добавляем теоретический цвет в шкалу
         ideal_rgb = get_rgb_from_lab(gen_lab)
         ideal_hsl = get_hsl_from_lab(gen_lab)
@@ -224,6 +230,7 @@ def main():
 
     generate_color_scale_html(ideal_color_scale, real_color_scale, "index.html")
     print("Генерация index.html завершена.")
+
 
 if __name__ == "__main__":
     main() 
