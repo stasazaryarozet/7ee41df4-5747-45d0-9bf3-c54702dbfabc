@@ -4,10 +4,36 @@ from skimage.color import lab2rgb, deltaE_cie76
 import sys
 import os
 
+def load_folio_catalog(input_path):
+    """Loads the full Folio color catalog for matching."""
+    print("Loading full Folio catalog from Excel...")
+    try:
+        df = pd.read_excel(input_path, sheet_name='Каталог Folio', header=0)
+        df = df.iloc[1:].reset_index(drop=True) # Skip pseudo-header
+
+        lab_cols = ['Target_Coordinate1', 'Target_Coordinate2', 'Target_Coordinate3']
+        for col in lab_cols:
+            df[col] = pd.to_numeric(df[col].astype(str).str.replace(',', '.'), errors='coerce')
+
+        df.dropna(subset=lab_cols + ['TargetName'], inplace=True)
+        print(f"Loaded {len(df)} valid colors from catalog.")
+        return df
+    except Exception as e:
+        print(f"Failed to load catalog: {e}", file=sys.stderr)
+        sys.exit(1)
+
 def interpolate_lab_colors(lab_start, lab_end, steps=10):
     """Generates a color scale by interpolating between two LAB colors."""
     print(f"Interpolating between LAB {np.round(lab_start, 2)} and {np.round(lab_end, 2)}...")
     return [lab_start + (lab_end - lab_start) * i / (steps - 1) for i in range(steps)]
+
+def find_closest_folio_color(lab_color, catalog_df):
+    """Finds the closest color in the Folio catalog using Delta E."""
+    target_lab = np.array(lab_color)
+    catalog_labs = catalog_df[['Target_Coordinate1', 'Target_Coordinate2', 'Target_Coordinate3']].values
+    deltas = deltaE_cie76(target_lab, catalog_labs)
+    closest_idx = np.argmin(deltas)
+    return catalog_df.iloc[closest_idx]
 
 def lab_to_hex(lab):
     """Converts a LAB color to an RGB hex string."""
@@ -24,11 +50,11 @@ def generate_html(colors_data, output_path):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAB Color Gradient from Screenshot</title>
+    <title>LAB Color Gradient (Matched to Folio Catalog)</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             margin: 0;
             padding: 20px;
@@ -38,13 +64,13 @@ def generate_html(colors_data, output_path):
         }
         .header {
             text-align: center;
-            color: white;
+            color: #333;
             margin-bottom: 30px;
         }
         .header h1 {
             font-size: 2.5em;
             margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         .header p {
             font-size: 1.2em;
@@ -65,34 +91,27 @@ def generate_html(colors_data, output_path):
             width: 180px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             overflow: hidden;
+            border: 1px solid #e0e0e0;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
         .swatch { 
             width: 100%; 
             height: 120px;
-            position: relative;
-        }
-        .swatch::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
         }
         .info { 
             padding: 15px; 
             text-align: center; 
+            border-top: 1px solid #eee;
         }
-        .info .step { 
+        .info .folio { 
             font-weight: bold; 
-            font-size: 1.1em; 
+            font-size: 1.2em; 
             color: #333;
             margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
         }
         .info .lab { 
             font-size: 0.85em; 
@@ -112,6 +131,7 @@ def generate_html(colors_data, output_path):
             margin: 30px 0;
             text-align: center;
             max-width: 600px;
+            border: 1px solid #ddd;
         }
         .source-info h3 {
             margin: 0 0 10px 0;
@@ -126,15 +146,14 @@ def generate_html(colors_data, output_path):
 <body>
     <div class="header">
         <h1>LAB Color Gradient</h1>
-        <p>Generated from Paletton Screenshot Analysis</p>
+        <p>Interpolated colors matched to the nearest real Folio catalog color</p>
     </div>
     
-         <div class="source-info">
-         <h3>Source Colors from Screenshot</h3>
-         <p><strong>Dark/Saturated:</strong> L*: 22.26, a*: 3.29, b*: -5.94</p>
-         <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.05, b*: -1.82</p>
-         <p>10-step linear interpolation in LAB color space</p>
-     </div>
+    <div class="source-info">
+        <h3>Source Colors from Screenshot</h3>
+        <p><strong>Dark/Saturated:</strong> L*: 22.26, a*: 3.29, b*: -5.94</p>
+        <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.05, b*: -1.82</p>
+    </div>
     
     <div class="container">
 """
@@ -145,7 +164,7 @@ def generate_html(colors_data, output_path):
         <div class="card">
             <div class="swatch" style="background-color: {hex_color};"></div>
             <div class="info">
-                <div class="step">Step {i+1}</div>
+                <div class="folio">{item['folio_code']}</div>
                 <div class="lab">L*: {item['lab'][0]:.2f}<br>a*: {item['lab'][1]:.2f}<br>b*: {item['lab'][2]:.2f}</div>
                 <div class="hex">{hex_color.upper()}</div>
             </div>
@@ -161,28 +180,31 @@ def generate_html(colors_data, output_path):
         f.write(html)
     print(f"Successfully created HTML file at '{output_path}'")
 
-def main():
+def main(catalog_file, output_html):
+    catalog = load_folio_catalog(catalog_file)
+
     # LAB values from screenshot analysis (corrected)
-    lab_dark_saturated = np.array([22.260, 3.294, -5.936])  # Темный/насыщенный
-    lab_light_unsaturated = np.array([92.5239, 1.0497, -1.8174])  # Светлый/ненасыщенный
-    
-    print("=== LAB Parameters from Screenshot (Corrected) ===")
-    print(f"Dark/Saturated: L*: {lab_dark_saturated[0]}, a*: {lab_dark_saturated[1]}, b*: {lab_dark_saturated[2]}")
-    print(f"Light/Unsaturated: L*: {lab_light_unsaturated[0]}, a*: {lab_light_unsaturated[1]}, b*: {lab_light_unsaturated[2]}")
-    print("=================================================")
+    lab_dark_saturated = np.array([22.260, 3.294, -5.936])
+    lab_light_unsaturated = np.array([92.5239, 1.0497, -1.8174])
     
     interpolated_steps = interpolate_lab_colors(lab_dark_saturated, lab_light_unsaturated)
     
     final_colors = []
-    print("\nGenerating 10-step gradient...")
+    print("\nMatching interpolated steps to Folio catalog...")
     for i, step_lab in enumerate(interpolated_steps):
-        color_data = {
-            "lab": step_lab
+        closest_match = find_closest_folio_color(step_lab, catalog)
+        match_data = {
+            "folio_code": closest_match['TargetName'],
+            "lab": (closest_match['Target_Coordinate1'], closest_match['Target_Coordinate2'], closest_match['Target_Coordinate3'])
         }
-        final_colors.append(color_data)
-        print(f"Step {i+1}: LAB ({step_lab[0]:.2f}, {step_lab[1]:.2f}, {step_lab[2]:.2f}) -> HEX {lab_to_hex(step_lab)}")
+        final_colors.append(match_data)
+        print(f"Step {i+1}: Theoretical LAB {np.round(step_lab, 1)} -> Closest Folio: {match_data['folio_code']} LAB {np.round(match_data['lab'], 1)}")
 
-    generate_html(final_colors, "index.html")
+    generate_html(final_colors, output_html)
 
 if __name__ == "__main__":
-    main()
+    catalog_path = "27.06.2025г. Каталог Folio (составы) .xlsx"
+    if not os.path.exists(catalog_path):
+        print(f"Error: Catalog file '{catalog_path}' not found.", file=sys.stderr)
+        sys.exit(1)
+    main(catalog_path, "index.html")
