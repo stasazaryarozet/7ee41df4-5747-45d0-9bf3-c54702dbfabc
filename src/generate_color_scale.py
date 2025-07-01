@@ -29,12 +29,7 @@ def linear_interpolate_gradient(lab_start, lab_end, steps=10):
     return gradient_lab
 
 def find_closest_folio_color_robust(lab_color, catalog_df, chroma_tolerance=12.0, lightness_tolerance=10.0):
-    """
-    Finds the closest color using a robust three-stage approach:
-    1. Filter by Chroma (C*) to match saturation level.
-    2. Filter the result by Lightness (L*).
-    3. Find the best match within the candidates using CIEDE2000.
-    """
+    """Finds the closest color using a robust three-stage approach."""
     target_lab = np.array(lab_color)
     target_l = target_lab[0]
     target_c = np.sqrt(target_lab[1]**2 + target_lab[2]**2)
@@ -50,7 +45,6 @@ def find_closest_folio_color_robust(lab_color, catalog_df, chroma_tolerance=12.0
     final_candidates = chroma_candidates[chroma_candidates['Target_Coordinate1'].between(l_min, l_max)]
     
     if final_candidates.empty:
-        # If the lightness filter is too strict, fall back to the chroma-filtered list
         final_candidates = chroma_candidates
         if final_candidates.empty:
              final_candidates = catalog_df
@@ -156,8 +150,6 @@ def main(catalog_path, output_html):
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
-    # Pointing to a hypothetical clean CSV file.
-    # This file needs to be created manually from the source.
     catalog_path = os.path.join(project_root, 'folio_catalog.csv')
     output_html_path = os.path.join(project_root, 'index.html')
     main(catalog_path, output_html_path)
