@@ -1,15 +1,21 @@
-name: Deploy static content to Pages
+name: Deploy to GitHub Pages
 
 on:
+  # Запускаем по push в ветку main
   push:
-    branches: ["main"]
+    branches:
+      - main
+  
+  # Позволяет запускать воркфлоу вручную со страницы Actions
   workflow_dispatch:
 
+# Устанавливаем права для GITHUB_TOKEN для деплоя на GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Разрешаем только один одновременный деплой, отменяя предыдущие
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -23,14 +29,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # В нашем случае шаг сборки не нужен, так как index.html статичен
+      # и генерируется локально. Если бы его нужно было генерировать на сервере,
+      # здесь были бы шаги установки Python, зависимостей и запуска скрипта.
+
       - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Create deployment artifact
-        run: mkdir -p _site && cp index.html _site/
+        uses: actions/configure-pages@v4
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_site'
+          # Загружаем всё из корневой директории.
+          # GitHub Pages по умолчанию будет искать index.html.
+          path: '.'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4 

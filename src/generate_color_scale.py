@@ -1,6 +1,6 @@
 import pandas as pd
 from openpyxl import load_workbook
-from colormath.color_objects import LabColor, sRGBColor
+from colormath.color_objects import LabColor, sRGBColor, HSLColor, LCHabColor
 from colormath.color_diff import delta_e_cie2000
 from colormath.color_conversions import convert_color
 import numpy as np
@@ -16,6 +16,11 @@ def get_rgb_from_lab(lab_color):
     # Ограничиваем значения в диапазоне 0-1 перед конвертацией
     clamped_rgb = tuple(max(0, min(1, val)) for val in srgb.get_value_tuple())
     return tuple(int(c * 255) for c in clamped_rgb)
+
+def get_hsl_from_lab(lab_color):
+    """Преобразует объект LabColor в кортеж HSL."""
+    hsl = convert_color(lab_color, HSLColor)
+    return hsl.get_value_tuple()
 
 def extract_colors_from_excel(file_path):
     """
@@ -53,9 +58,29 @@ def extract_colors_from_excel(file_path):
         print(f"Произошла ошибка при чтении Excel файла: {e}")
         return []
 
-def find_closest_color(target_lab, color_catalog):
-    """Находит ближайший цвет в каталоге по формуле CIEDE2000."""
-    return min(color_catalog, key=lambda color: delta_e_cie2000(target_lab, color['lab']))
+def find_closest_color_hybrid(target_lab, color_catalog, lightness_tolerance=5.0):
+    """
+    Находит ближайший цвет по гибридному алгоритму:
+    1. Фильтрует каталог по близкой светлоте.
+    2. В отфильтрованной группе находит ближайший цвет по формуле CIEDE2000.
+    """
+    target_l = target_lab.lab_l
+    
+    # 1. Фильтрация по светлоте
+    filtered_catalog = [
+        color for color in color_catalog 
+        if abs(color['lab'].lab_l - target_l) <= lightness_tolerance
+    ]
+    
+    if not filtered_catalog:
+        # Если в допуске ничего не найдено, ищем по всему каталогу
+        filtered_catalog = color_catalog
+
+    if not filtered_catalog:
+        return None # Произойдет, только если исходный каталог пуст
+
+    # 2. Поиск ближайшего в отфильтрованной группе
+    return min(filtered_catalog, key=lambda color: delta_e_cie2000(target_lab, color['lab']))
 
 def generate_color_scale_html(ideal_scale, real_scale, filename="color_scale.html"):
     """Генерирует HTML-файл для визуализации двух цветовых шкал."""
@@ -66,16 +91,20 @@ def generate_color_scale_html(ideal_scale, real_scale, filename="color_scale.htm
         for item in scale_data:
             rgb = item['rgb']
             lab_l, lab_a, lab_b = item['lab'].lab_l, item['lab'].lab_a, item['lab'].lab_b
-            text_color = "black" if lab_l > 50 else "white"
+            hsl_h, hsl_s, hsl_l = item['hsl']
+            text_color = "black" if lab_l > 60 else "white"
             
-            tooltip_text = f"LAB: {lab_l:.2f}, {lab_a:.2f}, {lab_b:.2f}<br>RGB: {rgb[0]}, {rgb[1]}, {rgb[2]}"
+            info_html = f"<p>LAB: {lab_l:.1f}, {lab_a:.1f}, {lab_b:.1f}</p>"
+            info_html += f"<p>HSL: {hsl_h:.0f}°, {hsl_s*100:.0f}%, {hsl_l*100:.0f}%</p>"
+            
             if 'match_name' in item:
-                tooltip_text += f"<br>Match: {item['match_name']}<br>dE2000: {item['delta_e']:.2f}"
+                info_html += f"<p>Folio: {item['match_name']}</p>"
+                info_html += f"<p><small>dE2000: {item['delta_e']:.2f}</small></p>"
 
             strip_html += f"""
-            <div class="color-band" style="background-color: rgb({rgb[0]}, {rgb[1]}, {rgb[2]}); color: {text_color};" title="{tooltip_text.replace('<br>', ' ')}">
+            <div class="color-band" style="background-color: rgb({rgb[0]}, {rgb[1]}, {rgb[2]}); color: {text_color};">
                 <div class="color-info">
-                    <p>Step {item['step']}</p>
+                    {info_html}
                 </div>
             </div>"""
         strip_html += "</div>"
@@ -88,11 +117,13 @@ def generate_color_scale_html(ideal_scale, real_scale, filename="color_scale.htm
     <meta charset="UTF-8">
     <title>Color Scale Comparison</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f0f0; margin: 2em; }
-        .container { display: flex; flex-direction: row; border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 2em; }
-        .color-band { padding: 10px; min-height: 100px; min-width: 80px; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .color-info p { margin: 2px 0; font-size: 0.8em; }
-        h2 { text-align: center; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; margin: 1em 0; padding: 1em; }
+        .container { display: flex; flex-direction: row; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2em; border-radius: 8px; overflow: hidden; }
+        .color-band { padding: 12px; min-height: 120px; width: 110px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .color-info { text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .color-info p { margin: 4px 0; font-size: 0.8rem; }
+        .color-info small { font-size: 0.7rem; opacity: 0.8; }
+        h2 { text-align: center; font-weight: 500; color: #333; }
     </style>
 </head>
 <body>
@@ -109,7 +140,7 @@ def generate_color_scale_html(ideal_scale, real_scale, filename="color_scale.htm
 
 def main():
     """
-    Главная функция для генерации градиентной шкалы.
+    Главная функция для генерации градиентной шкалы по методу попеременных шагов.
     """
     excel_file = '27.06.2025г. Каталог Folio (составы) .xlsx'
     
@@ -119,41 +150,80 @@ def main():
         print("Не удалось извлечь цвета из каталога. Завершение работы.")
         return
 
-    start_lab = LabColor(33.0, 0.0, 0.0) # Темно-серый
-    end_lab = LabColor(93.0, 0.0, 0.0)   # Светло-серый
+    # Крайние точки из задания
+    start_lab = LabColor(22.260, 3.294, -5.936)
+    end_lab = LabColor(92.5239, 1.0497, -1.8174)
     
-    steps = 10
+    # Конвертируем в LCH для работы с тоном, насыщенностью и светлотой
+    start_lch = convert_color(start_lab, LCHabColor)
+    end_lch = convert_color(end_lab, LCHabColor)
+
+    # Рассчитываем средний тон (с учетом "перехода через 0/360 градусов")
+    h1, h2 = start_lch.lch_h, end_lch.lch_h
+    avg_hue = (h1 + h2) / 2
+    if abs(h1 - h2) > 180:
+        avg_hue = (avg_hue + 180) % 360
+
+    num_points = 11  # 10 шагов = 11 точек в градиенте
+    # Распределяем количество шагов изменения между светлотой и насыщенностью
+    lightness_steps_count = (num_points - 1) // 2 + ((num_points - 1) % 2)
+    chroma_steps_count = (num_points - 1) // 2
+    
+    delta_l = end_lch.lch_l - start_lch.lch_l
+    delta_c = end_lch.lch_c - start_lch.lch_c
+
+    l_step_size = delta_l / lightness_steps_count if lightness_steps_count > 0 else 0
+    c_step_size = delta_c / chroma_steps_count if chroma_steps_count > 0 else 0
+
     ideal_color_scale = []
     real_color_scale = []
 
-    for i in range(steps):
-        t = i / (steps - 1)
-        l = start_lab.lab_l + (end_lab.lab_l - start_lab.lab_l) * t
-        a = start_lab.lab_a + (end_lab.lab_a - start_lab.lab_a) * t
-        b = start_lab.lab_b + (end_lab.lab_b - start_lab.lab_b) * t
-        interpolated_lab = LabColor(l, a, b)
+    l_val, c_val = start_lch.lch_l, start_lch.lch_c
+
+    for i in range(num_points):
+        if i == 0:
+            gen_lch = start_lch
+        elif i == num_points - 1:
+            # Гарантируем точное попадание в конечный цвет
+            gen_lch = end_lch
+        else:
+            # Попеременно меняем L и C
+            if (i - 1) % 2 == 0:  # Шаги 1, 3, 5... (переходы 0, 2, 4...) -> меняем L
+                l_val += l_step_size
+            else:  # Шаги 2, 4, 6... (переходы 1, 3, 5...) -> меняем C
+                c_val += c_step_size
+            gen_lch = LCHabColor(l_val, c_val, avg_hue)
         
-        closest_match = find_closest_color(interpolated_lab, color_catalog)
-        
-        ideal_rgb = get_rgb_from_lab(interpolated_lab)
+        gen_lab = convert_color(gen_lch, LabColor)
+
+        # Добавляем теоретический цвет в шкалу
+        ideal_rgb = get_rgb_from_lab(gen_lab)
+        ideal_hsl = get_hsl_from_lab(gen_lab)
         ideal_color_scale.append({
             "step": i + 1,
-            "lab": interpolated_lab,
-            "rgb": ideal_rgb
+            "lab": gen_lab,
+            "rgb": ideal_rgb,
+            "hsl": ideal_hsl
         })
 
-        closest_rgb = get_rgb_from_lab(closest_match['lab'])
-        delta_e = delta_e_cie2000(interpolated_lab, closest_match['lab'])
-        real_color_scale.append({
-            "step": i + 1,
-            "lab": closest_match['lab'],
-            "rgb": closest_rgb,
-            "match_name": closest_match['name'],
-            "delta_e": delta_e
-        })
+        # Ищем ближайший реальный цвет по гибридному методу
+        closest_match = find_closest_color_hybrid(gen_lab, color_catalog, lightness_tolerance=5.0)
+        
+        if closest_match:
+            closest_rgb = get_rgb_from_lab(closest_match['lab'])
+            closest_hsl = get_hsl_from_lab(closest_match['lab'])
+            delta_e = delta_e_cie2000(gen_lab, closest_match['lab'])
+            real_color_scale.append({
+                "step": i + 1,
+                "lab": closest_match['lab'],
+                "rgb": closest_rgb,
+                "hsl": closest_hsl,
+                "match_name": closest_match['name'],
+                "delta_e": delta_e
+            })
 
-    generate_color_scale_html(ideal_color_scale, real_color_scale, "color_scale.html")
-    print("Генерация color_scale.html завершена.")
+    generate_color_scale_html(ideal_color_scale, real_color_scale, "index.html")
+    print("Генерация index.html завершена.")
 
 if __name__ == "__main__":
     main() 

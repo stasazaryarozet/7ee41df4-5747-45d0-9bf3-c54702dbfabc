@@ -5,113 +5,125 @@
     <meta charset="UTF-8">
     <title>Color Scale Comparison</title>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f0f0f0; margin: 2em; }
-        .container { display: flex; flex-direction: row; border: 1px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 2em; }
-        .color-band { padding: 10px; min-height: 100px; min-width: 80px; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .color-info p { margin: 2px 0; font-size: 0.8em; }
-        h2 { text-align: center; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; background-color: #f4f4f4; margin: 1em 0; padding: 1em; }
+        .container { display: flex; flex-direction: row; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2em; border-radius: 8px; overflow: hidden; }
+        .color-band { padding: 12px; min-height: 120px; width: 110px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .color-info { text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .color-info p { margin: 4px 0; font-size: 0.8rem; }
+        .color-info small { font-size: 0.7rem; opacity: 0.8; }
+        h2 { text-align: center; font-weight: 500; color: #333; }
     </style>
 </head>
 <body>
 <h2>Ideal Gradient (Interpolated)</h2><div class='container'>
-            <div class="color-band" style="background-color: rgb(77, 77, 77); color: white;" title="LAB: 33.00, 0.00, 0.00 RGB: 77, 77, 77">
+            <div class="color-band" style="background-color: rgb(55, 51, 62); color: white;">
                 <div class="color-info">
-                    <p>Step 1</p>
+                    <p>LAB: 22.3, 3.3, -5.9</p><p>HSL: 259°, 9%, 22%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(93, 93, 93); color: white;" title="LAB: 39.67, 0.00, 0.00 RGB: 93, 93, 93">
+            <div class="color-band" style="background-color: rgb(87, 83, 94); color: white;">
                 <div class="color-info">
-                    <p>Step 2</p>
+                    <p>LAB: 36.3, 3.3, -5.9</p><p>HSL: 260°, 6%, 35%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(109, 109, 109); color: white;" title="LAB: 46.33, 0.00, 0.00 RGB: 109, 109, 109">
+            <div class="color-band" style="background-color: rgb(87, 84, 93); color: white;">
                 <div class="color-info">
-                    <p>Step 3</p>
+                    <p>LAB: 36.3, 2.9, -5.1</p><p>HSL: 260°, 5%, 35%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(126, 126, 126); color: black;" title="LAB: 53.00, 0.00, 0.00 RGB: 126, 126, 126">
+            <div class="color-band" style="background-color: rgb(121, 118, 128); color: white;">
                 <div class="color-info">
-                    <p>Step 4</p>
+                    <p>LAB: 50.4, 2.9, -5.1</p><p>HSL: 260°, 4%, 48%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(143, 143, 143); color: black;" title="LAB: 59.67, 0.00, 0.00 RGB: 143, 143, 143">
+            <div class="color-band" style="background-color: rgb(121, 118, 127); color: white;">
                 <div class="color-info">
-                    <p>Step 5</p>
+                    <p>LAB: 50.4, 2.4, -4.3</p><p>HSL: 260°, 3%, 48%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(161, 161, 161); color: black;" title="LAB: 66.33, 0.00, 0.00 RGB: 161, 161, 161">
+            <div class="color-band" style="background-color: rgb(157, 154, 163); color: black;">
                 <div class="color-info">
-                    <p>Step 6</p>
+                    <p>LAB: 64.4, 2.4, -4.3</p><p>HSL: 260°, 5%, 63%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(179, 179, 179); color: black;" title="LAB: 73.00, 0.00, 0.00 RGB: 179, 179, 179">
+            <div class="color-band" style="background-color: rgb(157, 155, 162); color: black;">
                 <div class="color-info">
-                    <p>Step 7</p>
+                    <p>LAB: 64.4, 2.0, -3.5</p><p>HSL: 260°, 4%, 62%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(197, 197, 197); color: black;" title="LAB: 79.67, 0.00, 0.00 RGB: 197, 197, 197">
+            <div class="color-band" style="background-color: rgb(195, 193, 200); color: black;">
                 <div class="color-info">
-                    <p>Step 8</p>
+                    <p>LAB: 78.5, 2.0, -3.5</p><p>HSL: 260°, 6%, 77%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(215, 215, 215); color: black;" title="LAB: 86.33, 0.00, 0.00 RGB: 215, 215, 215">
+            <div class="color-band" style="background-color: rgb(195, 193, 199); color: black;">
                 <div class="color-info">
-                    <p>Step 9</p>
+                    <p>LAB: 78.5, 1.5, -2.6</p><p>HSL: 260°, 5%, 77%</p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(234, 234, 234); color: black;" title="LAB: 93.00, 0.00, 0.00 RGB: 234, 234, 234">
+            <div class="color-band" style="background-color: rgb(234, 232, 238); color: black;">
                 <div class="color-info">
-                    <p>Step 10</p>
+                    <p>LAB: 92.5, 1.5, -2.6</p><p>HSL: 260°, 15%, 92%</p>
+                </div>
+            </div>
+            <div class="color-band" style="background-color: rgb(234, 232, 237); color: black;">
+                <div class="color-info">
+                    <p>LAB: 92.5, 1.0, -1.8</p><p>HSL: 261°, 10%, 92%</p>
                 </div>
             </div></div><h2>Real Folio Colors (Closest Match)</h2><div class='container'>
-            <div class="color-band" style="background-color: rgb(73, 73, 72); color: white;" title="LAB: 31.32, -0.37, 0.95 RGB: 73, 73, 72 Match: 6L1-8 dE2000: 1.71">
+            <div class="color-band" style="background-color: rgb(61, 63, 67); color: white;">
                 <div class="color-info">
-                    <p>Step 1</p>
+                    <p>LAB: 26.8, -0.1, -2.6</p><p>HSL: 222°, 4%, 25%</p><p>Folio: 6Q2-8</p><p><small>dE2000: 6.15</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(79, 82, 82); color: white;" title="LAB: 34.80, -1.21, -0.20 RGB: 79, 82, 82 Match: 6L3-8 dE2000: 4.48">
+            <div class="color-band" style="background-color: rgb(85, 74, 88); color: white;">
                 <div class="color-info">
-                    <p>Step 2</p>
+                    <p>LAB: 33.2, 6.7, -6.6</p><p>HSL: 285°, 9%, 32%</p><p>Folio: 6A1-8</p><p><small>dE2000: 4.61</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(117, 116, 113); color: white;" title="LAB: 49.19, -0.23, 1.70 RGB: 117, 116, 113 Match: 6L1-7 dE2000: 3.27">
+            <div class="color-band" style="background-color: rgb(74, 77, 86); color: white;">
                 <div class="color-info">
-                    <p>Step 3</p>
+                    <p>LAB: 32.8, 0.4, -6.2</p><p>HSL: 225°, 8%, 32%</p><p>Folio: 6R3-8</p><p><small>dE2000: 4.70</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(121, 126, 132); color: black;" title="LAB: 52.84, -1.15, -3.65 RGB: 121, 126, 132 Match: 6Q3-6 dE2000: 3.70">
+            <div class="color-band" style="background-color: rgb(120, 112, 132); color: white;">
                 <div class="color-info">
-                    <p>Step 4</p>
+                    <p>LAB: 48.8, 6.1, -9.5</p><p>HSL: 264°, 8%, 48%</p><p>Folio: 6T3-7</p><p><small>dE2000: 4.78</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(137, 139, 136); color: black;" title="LAB: 57.75, -1.16, 1.47 RGB: 137, 139, 136 Match: 6L2-6 dE2000: 2.76">
+            <div class="color-band" style="background-color: rgb(111, 112, 131); color: white;">
                 <div class="color-info">
-                    <p>Step 5</p>
+                    <p>LAB: 48.0, 2.6, -10.5</p><p>HSL: 237°, 8%, 48%</p><p>Folio: 6S3-7</p><p><small>dE2000: 5.41</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(163, 165, 164); color: black;" title="LAB: 67.61, -0.74, 0.22 RGB: 163, 165, 164 Match: 6L1-5 dE2000: 1.51">
+            <div class="color-band" style="background-color: rgb(160, 154, 156); color: black;">
                 <div class="color-info">
-                    <p>Step 6</p>
+                    <p>LAB: 64.5, 2.5, 0.2</p><p>HSL: 348°, 3%, 62%</p><p>Folio: 6G1-5</p><p><small>dE2000: 4.00</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(178, 180, 179); color: black;" title="LAB: 73.46, -0.89, 0.20 RGB: 178, 180, 179 Match: 6L1-4 dE2000: 1.35">
+            <div class="color-band" style="background-color: rgb(160, 154, 156); color: black;">
                 <div class="color-info">
-                    <p>Step 7</p>
+                    <p>LAB: 64.5, 2.5, 0.2</p><p>HSL: 348°, 3%, 62%</p><p>Folio: 6G1-5</p><p><small>dE2000: 3.41</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(200, 201, 199); color: black;" title="LAB: 81.09, -0.65, 0.90 RGB: 200, 201, 199 Match: 6L1-3 dE2000: 1.62">
+            <div class="color-band" style="background-color: rgb(203, 199, 211); color: black;">
                 <div class="color-info">
-                    <p>Step 8</p>
+                    <p>LAB: 81.1, 2.8, -5.1</p><p>HSL: 259°, 11%, 81%</p><p>Folio: 6T2-3</p><p><small>dE2000: 2.50</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(216, 216, 213); color: black;" title="LAB: 86.33, -0.32, 1.55 RGB: 216, 216, 213 Match: 6K3-2 dE2000: 1.57">
+            <div class="color-band" style="background-color: rgb(203, 199, 211); color: black;">
                 <div class="color-info">
-                    <p>Step 9</p>
+                    <p>LAB: 81.1, 2.8, -5.1</p><p>HSL: 259°, 11%, 81%</p><p>Folio: 6T2-3</p><p><small>dE2000: 3.19</small></p>
                 </div>
             </div>
-            <div class="color-band" style="background-color: rgb(228, 228, 229); color: black;" title="LAB: 90.73, 0.08, -0.53 RGB: 228, 228, 229 Match: 6R2-1 dE2000: 1.50">
+            <div class="color-band" style="background-color: rgb(234, 231, 235); color: black;">
                 <div class="color-info">
-                    <p>Step 10</p>
+                    <p>LAB: 92.2, 1.4, -1.4</p><p>HSL: 287°, 8%, 92%</p><p>Folio: 4T2-1</p><p><small>dE2000: 1.21</small></p>
+                </div>
+            </div>
+            <div class="color-band" style="background-color: rgb(234, 231, 235); color: black;">
+                <div class="color-info">
+                    <p>LAB: 92.2, 1.4, -1.4</p><p>HSL: 287°, 8%, 92%</p><p>Folio: 4T2-1</p><p><small>dE2000: 0.72</small></p>
                 </div>
             </div></div>
 </body>
