@@ -129,12 +129,12 @@ def generate_html(colors_data, output_path):
         <p>Generated from Paletton Screenshot Analysis</p>
     </div>
     
-    <div class="source-info">
-        <h3>Source Colors from Screenshot</h3>
-        <p><strong>Dark/Saturated:</strong> L*: 22.36, a*: -5.84, b*: -0.81</p>
-        <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.54, b*: -0.82</p>
-        <p>10-step linear interpolation in LAB color space</p>
-    </div>
+         <div class="source-info">
+         <h3>Source Colors from Screenshot</h3>
+         <p><strong>Dark/Saturated:</strong> L*: 22.26, a*: 3.29, b*: -5.94</p>
+         <p><strong>Light/Unsaturated:</strong> L*: 92.52, a*: 1.05, b*: -1.82</p>
+         <p>10-step linear interpolation in LAB color space</p>
+     </div>
     
     <div class="container">
 """
@@ -162,14 +162,14 @@ def generate_html(colors_data, output_path):
     print(f"Successfully created HTML file at '{output_path}'")
 
 def main():
-    # LAB values from screenshot analysis
-    lab_dark_saturated = np.array([22.360, -5.836, -0.814])  # Темный/насыщенный
-    lab_light_unsaturated = np.array([92.5239, 1.5437, -0.8174])  # Светлый/ненасыщенный
+    # LAB values from screenshot analysis (corrected)
+    lab_dark_saturated = np.array([22.260, 3.294, -5.936])  # Темный/насыщенный
+    lab_light_unsaturated = np.array([92.5239, 1.0497, -1.8174])  # Светлый/ненасыщенный
     
-    print("=== LAB Parameters from Screenshot ===")
+    print("=== LAB Parameters from Screenshot (Corrected) ===")
     print(f"Dark/Saturated: L*: {lab_dark_saturated[0]}, a*: {lab_dark_saturated[1]}, b*: {lab_dark_saturated[2]}")
     print(f"Light/Unsaturated: L*: {lab_light_unsaturated[0]}, a*: {lab_light_unsaturated[1]}, b*: {lab_light_unsaturated[2]}")
-    print("=====================================")
+    print("=================================================")
     
     interpolated_steps = interpolate_lab_colors(lab_dark_saturated, lab_light_unsaturated)
     
