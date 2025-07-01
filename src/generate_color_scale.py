@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
-from skimage.color import lab2rgb, deltaE_cie76, lab2lch, lch2lab, deltaE_ciede2000
+from skimage.color import lab2rgb, deltaE_cie76, deltaE_ciede2000
 import sys
 import os
-import math
 
 def load_folio_catalog(input_path):
     """Loads the full Folio color catalog from the Excel file."""
@@ -21,66 +20,44 @@ def load_folio_catalog(input_path):
         print(f"Failed to load catalog: {e}", file=sys.stderr)
         sys.exit(1)
 
-def generate_alternating_gradient(lab_start, lab_end, steps=10, start_with_lightness=True):
+def linear_interpolate_gradient(lab_start, lab_end, steps=10):
+    """Generates a gradient using simple linear interpolation."""
+    print("Generating linear interpolation gradient...")
+    gradient_lab = []
+    for i in range(steps):
+        fraction = i / (steps - 1)
+        lab_step = lab_start + (lab_end - lab_start) * fraction
+        gradient_lab.append(lab_step)
+    return gradient_lab
+
+def find_closest_folio_color_hybrid(lab_color, catalog_df, lightness_tolerance=5.0):
     """
-    Generates a gradient by alternating changes in Lightness and Chroma
-    at a constant average Hue.
+    Finds the closest color using a hybrid two-stage approach:
+    1. Filter by a lightness (L*) tolerance.
+    2. Find the best match within the filtered candidates using CIEDE2000.
     """
-    print("Generating alternating gradient...")
-    lch_start = lab2lch(np.array([[lab_start]]))[0][0]
-    lch_end = lab2lch(np.array([[lab_end]]))[0][0]
-
-    l_start, c_start, h_start_deg = lch_start
-    l_end, c_end, h_end_deg = lch_end
-    
-    # Correctly average hue (angles in degrees)
-    h_start_rad = math.radians(h_start_deg)
-    h_end_rad = math.radians(h_end_deg)
-    avg_hue_rad = math.atan2(
-        (math.sin(h_start_rad) + math.sin(h_end_rad)) / 2,
-        (math.cos(h_start_rad) + math.cos(h_end_rad)) / 2
-    )
-    avg_hue_deg = math.degrees(avg_hue_rad) % 360
-
-    print(f"Start LCH: {np.round(lch_start,1)}, End LCH: {np.round(lch_end,1)}")
-    print(f"Using constant average Hue: {avg_hue_deg:.1f}°")
-
-    l_current, c_current = l_start, c_start
-    
-    num_l_steps = math.ceil((steps -1) / 2) if start_with_lightness else math.floor((steps -1) / 2)
-    num_c_steps = math.floor((steps -1) / 2) if start_with_lightness else math.ceil((steps-1) / 2)
-
-    delta_l_per_step = (l_end - l_start) / num_l_steps if num_l_steps > 0 else 0
-    delta_c_per_step = (c_end - c_start) / num_c_steps if num_c_steps > 0 else 0
-    
-    gradient_lch = [lch_start]
-    for i in range(1, steps):
-        is_lightness_step = (i % 2 != 0) if start_with_lightness else (i % 2 == 0)
-        if is_lightness_step:
-            l_current += delta_l_per_step
-        else:
-            c_current += delta_c_per_step
-        
-        # Ensure chroma is non-negative
-        c_actual = max(0, c_current)
-        gradient_lch.append([l_current, c_actual, avg_hue_deg])
-
-    # Convert back to LAB
-    return [lch2lab(np.array([[lch]]))[0][0] for lch in gradient_lch]
-
-
-def find_closest_folio_color(lab_color, catalog_df):
-    """Finds the closest color in the Folio catalog using the CIEDE2000 formula."""
     target_lab = np.array(lab_color)
-    catalog_labs = catalog_df[['Target_Coordinate1', 'Target_Coordinate2', 'Target_Coordinate3']].values
-    # Using the more perceptually uniform CIEDE2000 formula
-    deltas = deltaE_ciede2000(target_lab, catalog_labs)
-    closest_idx = np.argmin(deltas)
-    return catalog_df.iloc[closest_idx]
+    
+    # Stage 1: Filter by Lightness
+    l_target = target_lab[0]
+    l_min, l_max = l_target - lightness_tolerance, l_target + lightness_tolerance
+    
+    candidates = catalog_df[catalog_df['Target_Coordinate1'].between(l_min, l_max)]
+    
+    # If no candidates are found, widen the search to the full catalog
+    if candidates.empty:
+        candidates = catalog_df
+
+    # Stage 2: Find the best match in the candidate pool using CIEDE2000
+    candidate_labs = candidates[['Target_Coordinate1', 'Target_Coordinate2', 'Target_Coordinate3']].values
+    deltas = deltaE_ciede2000(target_lab, candidate_labs)
+    
+    closest_idx_in_candidates = np.argmin(deltas)
+    return candidates.iloc[closest_idx_in_candidates]
 
 def lab_to_hex(lab):
     """Converts a LAB color to an RGB hex string."""
-    with np.errstate(invalid='ignore'): # Suppress minor warnings from skimage
+    with np.errstate(invalid='ignore'):
         rgb_0_1 = lab2rgb(np.array([[lab]]))
     rgb_0_1 = np.clip(rgb_0_1, 0, 1)
     rgb_0_255 = (rgb_0_1[0][0] * 255).astype(int)
@@ -113,11 +90,12 @@ def generate_html(theoretical_colors, matched_colors, output_path):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Scale Comparison</title>
+    <title>Color Scale Comparison (Linear + CIE76)</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
         h1, h2 { text-align: center; color: #333; }
-        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 40px; }
+        h2 { border-top: 1px solid #ddd; padding-top: 20px; margin-top: 40px;}
+        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-bottom: 20px; }
         .card { background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 160px; overflow: hidden; }
         .swatch { width: 100%; height: 120px; }
         .info { padding: 12px; text-align: center; font-size: 0.9em; }
@@ -127,10 +105,10 @@ def generate_html(theoretical_colors, matched_colors, output_path):
     </style>
 </head>
 <body>
-    <h1>Color Scale Comparison</h1>
+    <h1>Color Scale Comparison (Linear Gradient)</h1>
 """
-    html += create_scale_html("Theoretical Gradient (Alternating L*/C*)", theoretical_colors)
-    html += create_scale_html("Matched to Folio Catalog", matched_colors, show_folio_code=True)
+    html += create_scale_html("Theoretical Gradient (Linear Interpolation)", theoretical_colors)
+    html += create_scale_html("Matched to Folio Catalog (Hybrid Method)", matched_colors, show_folio_code=True)
     html += "</body></html>"
 
     with open(output_path, 'w', encoding='utf-8') as f:
@@ -142,15 +120,15 @@ def main(catalog_file, output_html):
     lab_start = np.array([22.260, 3.294, -5.936])
     lab_end = np.array([92.5239, 1.0497, -1.8174])
     
-    # 1. Generate theoretical "clean" scale
-    theoretical_lab_steps = generate_alternating_gradient(lab_start, lab_end, steps=10, start_with_lightness=True)
+    # 1. Generate theoretical "clean" scale using linear interpolation
+    theoretical_lab_steps = linear_interpolate_gradient(lab_start, lab_end, steps=10)
     theoretical_colors_data = [{"lab": lab} for lab in theoretical_lab_steps]
     
-    # 2. Generate matched scale
+    # 2. Generate matched scale using the hybrid method
     matched_colors_data = []
-    print("\nMatching theoretical steps to Folio catalog...")
+    print("\nMatching theoretical steps to Folio catalog using Hybrid Method (L* filter + CIEDE2000)...")
     for i, step_lab in enumerate(theoretical_lab_steps):
-        closest_match = find_closest_folio_color(step_lab, catalog)
+        closest_match = find_closest_folio_color_hybrid(step_lab, catalog, lightness_tolerance=7.5) # Increased tolerance slightly for better matching
         match_data = {
             "folio_code": closest_match['TargetName'],
             "lab": (closest_match['Target_Coordinate1'], closest_match['Target_Coordinate2'], closest_match['Target_Coordinate3'])
