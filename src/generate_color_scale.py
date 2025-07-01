@@ -5,14 +5,17 @@ import sys
 import os
 
 def load_folio_catalog(file_path):
-    """Loads the color catalog from the cleaned CSV file."""
-    print("Loading full Folio catalog from CSV...")
+    """Loads the color catalog from a clean CSV file."""
+    print("Loading color catalog from CSV...")
     try:
         df = pd.read_csv(file_path)
         print(f"Loaded {len(df)} valid colors from catalog.")
         return df
     except FileNotFoundError:
-        print(f"Error: Catalog file not found at {file_path}")
+        print(f"Error: Catalog file '{file_path}' not found. Please provide a clean CSV.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An error occurred while processing the CSV file: {e}")
         sys.exit(1)
 
 def linear_interpolate_gradient(lab_start, lab_end, steps=10):
@@ -47,6 +50,7 @@ def find_closest_folio_color_robust(lab_color, catalog_df, chroma_tolerance=12.0
     final_candidates = chroma_candidates[chroma_candidates['Target_Coordinate1'].between(l_min, l_max)]
     
     if final_candidates.empty:
+        # If the lightness filter is too strict, fall back to the chroma-filtered list
         final_candidates = chroma_candidates
         if final_candidates.empty:
              final_candidates = catalog_df
@@ -119,18 +123,18 @@ def generate_html(theoretical_colors_data, matched_colors_data, output_path):
 def main(catalog_path, output_html):
     """Main function to run the color scale generation."""
     catalog = load_folio_catalog(catalog_path)
-    
-    # LAB values for the gradient provided by user
+    if catalog.empty:
+        print("Catalog is empty. Cannot generate scale.")
+        return
+
     lab_start = [22.26, 3.29, -5.94]
     lab_end = [92.52, 1.05, -1.82]
 
-    # 1. Generate theoretical scale
     theoretical_lab_steps = linear_interpolate_gradient(lab_start, lab_end, steps=10)
     theoretical_colors_data = [{"lab": lab} for lab in theoretical_lab_steps]
     
-    # 2. Generate matched scale using the robust 3-stage method
     matched_colors_data = []
-    print("\nMatching theoretical steps to Folio catalog using Robust 3-Stage Method (Chroma -> Lightness -> CIEDE2000)...")
+    print("\nMatching theoretical steps to Folio catalog using Robust 3-Stage Method...")
     for i, step_lab in enumerate(theoretical_lab_steps):
         closest_match = find_closest_folio_color_robust(step_lab, catalog)
         
@@ -147,13 +151,13 @@ def main(catalog_path, output_html):
         matched_colors_data.append(match_data)
         print(f"Step {i+1}: Theoretical LAB {np.round(step_lab, 1)} -> Closest Folio: {match_data['folio_code']} LAB {np.round(matched_lab, 1)}")
 
-    # 3. Generate HTML
     generate_html(theoretical_colors_data, matched_colors_data, output_html)
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
-    # Use the new clean CSV file as the data source
-    catalog_path = os.path.join(project_root, 'folio_catalog_clean.csv')
+    # Pointing to a hypothetical clean CSV file.
+    # This file needs to be created manually from the source.
+    catalog_path = os.path.join(project_root, 'folio_catalog.csv')
     output_html_path = os.path.join(project_root, 'index.html')
     main(catalog_path, output_html_path)
